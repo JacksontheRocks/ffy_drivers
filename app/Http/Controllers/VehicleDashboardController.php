@@ -3,29 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Vehicle;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Auth;
 
 class VehicleDashboardController extends Controller
 {
     public function show()
     {
-        $driver = Auth::user();
-        $vehicles = $driver->vehicles;
-        return view('dashboard', compact('vehicles'));
+        $driver = auth()->user();
+        $selectedVehicle = $driver->activeVehicle; // Obtener el vehículo seleccionado
+
+        return view('dashboard', [
+            'vehicles' => $driver->vehicles,
+            'selectedVehicle' => $selectedVehicle, // Pasar el vehículo seleccionado a la vista
+        ]);
     }
 
     public function selectVehicle(Request $request)
     {
-        $driver = Auth::user();
-        $vehicle = Vehicle::find($request->vehicle_id);
-        
-        if ($vehicle) {
-            $driver->active_vehicle_id = $vehicle->id;
-            $driver->save();
-            return redirect()->route('dashboard')->with('success', 'Vehículo seleccionado correctamente.');
-        }
+        $driver = auth()->user();
+        $driver->active_vehicle_id = $request->vehicle_id;
+        $driver->save();
 
-        return redirect()->route('dashboard')->with('error', 'Vehículo no encontrado.');
+        return redirect()->back()->with('success', 'Vehículo seleccionado correctamente.');
+    }
+
+    public function deactivateVehicle(Request $request)
+    {
+        $driver = Auth::user();
+        $driver->active_vehicle_id = null;
+        $driver->save();
+
+        return redirect()->route('dashboard')->with('success', 'Vehículo desactivado correctamente.');
     }
 }

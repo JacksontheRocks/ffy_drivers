@@ -1,24 +1,11 @@
-import './bootstrap';
-import '../css/app.css';
+import { createApp } from 'vue';
+import OrderListenerComponent from './components/OrderListenerComponent.vue';
 
-import Echo from 'laravel-echo';
-window.Pusher = require('pusher-js');
+const app = createApp({});
 
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    encrypted: true
-});
+app.component('order-listener-component', OrderListenerComponent);
 
-window.Echo.channel('orders')
-    .listen('NewOrder', (e) => {
-        alert('Nuevo pedido recibido: ' + e.order);
-    });
-
-
-
-
+app.mount('#app');
 
 
 

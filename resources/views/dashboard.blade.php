@@ -52,6 +52,28 @@
                 @endforeach
             </tbody>
         </table>
+
+        @if ($selectedVehicle)
+            <div class="mt-4">
+                <p class="text-success">Estás en modo activo con el vehículo: {{ $selectedVehicle->marca }} {{ $selectedVehicle->model }} ({{ $selectedVehicle->matricula }})</p>
+                <form method="POST" action="{{ route('deactivate_vehicle') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">Desactivar Vehículo</button>
+                </form>
+                <div class="mt-2 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p>Estás en modo activo esperando peticiones de porte...</p>
+                </div>
+            </div>
+        @endif
     </div>
+
+    @section('content')
+        <div id="app">
+            <order-listener-component></order-listener-component>
+        </div>
+    @endsection
 </body>
 </html>
